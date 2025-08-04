@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resolutor de Triángulos</title>
+  <link rel="stylesheet" href="style2.css" />
+  <script defer src="resolver.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Resolución de Triángulos</h1>
+  </header>
+
+  <main>
+    <form id="formulario">
+  <h2>Ingresa los datos conocidos:</h2>
+  <label for="ladoA">Lado a:</label>
+  <input type="number" id="ladoA" step="any" />
+
+  <label for="ladoB">Lado b:</label>
+  <input type="number" id="ladoB" step="any" />
+
+  <label for="ladoC">Lado c:</label>
+  <input type="number" id="ladoC" step="any" />
+
+  <label for="anguloA">Ángulo A (°):</label>
+  <input type="number" id="anguloA" step="any" />
+
+  <label for="anguloB">Ángulo B (°):</label>
+  <input type="number" id="anguloB" step="any" />
+
+  <label for="anguloC">Ángulo C (°):</label>
+  <input type="number" id="anguloC" step="any" />
+
+  <button type="submit">Resolver Triángulo</button>
+  <button type="reset" id="btnLimpiar">Limpiar Formulario</button>
+  <a href="index.html" class="boton-enlace">Volver al inicio</a>
+</form>
+
+    <div class="resultados" id="explicacion"></div>
+    <div class="resultados" id="resultados"></div>
+    <h2>Gráfico del Triángulo</h2>
+    <canvas id="canvas" ></canvas>
+  </main>
+
+  <footer>
+    <p>Resolución de Triángulos</p>
+  </footer>
+</body>
+</html>
