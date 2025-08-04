@@ -27,12 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Validaciones básicas
     if (lados.length + angulos.length < 3) {
-      explicacion.textContent = "❌ Debes ingresar al menos tres datos, incluyendo al menos un lado.";
+      explicacion.textContent = "Debes ingresar al menos tres datos, incluyendo al menos un lado.";
       return;
     }
 
     if (angulos.reduce((acc, val) => acc + val, 0) > 180) {
-      explicacion.textContent = "❌ La suma de los ángulos no puede superar 180°.";
+      explicacion.textContent = "La suma de los ángulos no puede superar 180°.";
       return;
     }
 
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // CASO LLL (3 lados)
     if (numLados === 3 && numAng === 0) {
       if (!desigualdadTriangular(...ladosRes)) {
-        error = "❌ Los lados no cumplen la desigualdad triangular.";
+        error = "Los lados no cumplen la desigualdad triangular.";
       } else {
         caso = "Caso Lado-Lado-Lado (LLL): Se usan Ley del Coseno para calcular los ángulos.";
         // Calcular ángulos por ley del coseno
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const sinB = (ladoAdyacente * Math.sin(rad(angulosRes[idxAng]))) / ladoOpuesto;
 
         if (sinB > 1) {
-          error = "❌ No hay solución: El seno calculado es mayor que 1, triángulo imposible.";
+          error = "No hay solución: El seno calculado es mayor que 1, triángulo imposible.";
         } else {
           const B1 = deg(Math.asin(sinB));
           const C1 = 180 - angulosRes[idxAng] - B1;
@@ -183,7 +183,7 @@ Lado faltante ≈ ${c2.toFixed(2)}
       }
     }
     else {
-      error = "❌ No se detectó un caso válido o faltan datos necesarios.";
+      error = "No se detectó un caso válido o faltan datos necesarios.";
     }
 
     if (error) {
@@ -198,7 +198,7 @@ Lado faltante ≈ ${c2.toFixed(2)}
     const razon = ladosRes[0]/Math.sin(rad(angulosRes[0]));
     for(let i=1; i<3; i++) {
       if(!casiIgual(razon, ladosRes[i]/Math.sin(rad(angulosRes[i])))) {
-        explicacion.textContent = "❌ Los datos ingresados son inconsistentes y no forman un triángulo válido.";
+        explicacion.textContent = "Los datos ingresados son inconsistentes y no forman un triángulo válido.";
         resultados.textContent = "";
         limpiarCanvas();
         return;
@@ -317,4 +317,5 @@ function dibujarTriangulo(ctx, a, b, c, A, B, C) {
     }
   });
 });
+
 
