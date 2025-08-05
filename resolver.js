@@ -27,12 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Validaciones básicas
     if (lados.length + angulos.length < 3) {
-      explicacion.textContent = "Debes ingresar al menos tres datos, incluyendo al menos un lado.";
+      explicacion.textContent = " Debes ingresar al menos tres datos, incluyendo al menos un lado.";
       return;
     }
 
     if (angulos.reduce((acc, val) => acc + val, 0) > 180) {
-      explicacion.textContent = "La suma de los ángulos no puede superar 180°.";
+      explicacion.textContent = " La suma de los ángulos no puede superar 180°.";
       return;
     }
 
@@ -183,7 +183,7 @@ Lado faltante ≈ ${c2.toFixed(2)}
       }
     }
     else {
-      error = "No se detectó un caso válido o faltan datos necesarios.";
+      error = " No se detectó un caso válido o faltan datos necesarios.";
     }
 
     if (error) {
@@ -207,9 +207,25 @@ Lado faltante ≈ ${c2.toFixed(2)}
 
     // Mostrar explicación y resultados
     explicacion.textContent = caso;
+
+    // -- Cálculo de vértices usando método consistente --
+    const vertices = calcularVerticesUnicos(ladosRes, angulosRes);
+
+    // -- Cálculo de centros del triángulo --
+    const baricentro = calcularBaricentro(vertices);
+    const incentro = calcularIncentro(vertices, ladosRes);
+    const circuncentro = calcularCircuncentro(vertices);
+
+    // Mostrar resultados incluyendo centros
     resultados.textContent = 
       `Lados:\na = ${ladosRes[0].toFixed(2)}\nb = ${ladosRes[1].toFixed(2)}\nc = ${ladosRes[2].toFixed(2)}\n\n` +
-      `Ángulos:\nA = ${angulosRes[0].toFixed(2)}°\nB = ${angulosRes[1].toFixed(2)}°\nC = ${angulosRes[2].toFixed(2)}°`;
+      `Ángulos:\nA = ${angulosRes[0].toFixed(2)}°\nB = ${angulosRes[1].toFixed(2)}°\nC = ${angulosRes[2].toFixed(2)}°\n\n` +
+      `Vértices:\nA = (${vertices.A.x.toFixed(2)}, ${vertices.A.y.toFixed(2)})\n` +
+      `B = (${vertices.B.x.toFixed(2)}, ${vertices.B.y.toFixed(2)})\n` +
+      `C = (${vertices.C.x.toFixed(2)}, ${vertices.C.y.toFixed(2)})\n\n` +
+      `Centros:\nBaricentro (G) = (${baricentro.x.toFixed(2)}, ${baricentro.y.toFixed(2)})\n` +
+      `Incentro (I) = (${incentro.x.toFixed(2)}, ${incentro.y.toFixed(2)})\n` +
+      `Circuncentro (O) = (${circuncentro.x.toFixed(2)}, ${circuncentro.y.toFixed(2)})`;
 
     // Dibujo del triángulo simple (sin arcos ni etiquetas de ángulo)
     dibujarTriangulo(ctx, ladosRes[0], ladosRes[1], ladosRes[2], angulosRes[0], angulosRes[1], angulosRes[2]);
@@ -227,72 +243,130 @@ Lado faltante ≈ ${c2.toFixed(2)}
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-function dibujarTriangulo(ctx, a, b, c, A, B, C) {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  ctx.strokeStyle = "#007bff";
-  ctx.lineWidth = 2;
+  // --- Función corregida para calcular vértices con método consistente ---
+  function calcularVerticesUnicos(lados, angulos) {
+    const [a, b, c] = lados;
+    const [A, B, C] = angulos;
 
-  const padding = 40;
-  const canvasWidth = ctx.canvas.width;
-  const canvasHeight = ctx.canvas.height;
+    const Ax = 0;
+    const Ay = 0;
 
-  // Punto A en (0,0), punto B en (c,0), punto C con ley del coseno (ángulo C)
-  const Ax = 0;
-  const Ay = 0;
+    const Bx = c;
+    const By = 0;
 
-  const Bx = c;
-  const By = 0;
+    // Usar ángulo A para calcular C (consistente)
+    const A_rad = A * Math.PI / 180;
+    const Cx = b * Math.cos(A_rad);
+    const Cy = b * Math.sin(A_rad);
 
-  const angC_rad = (C * Math.PI) / 180;
-  const Cx = b * Math.cos(angC_rad);
-  const Cy = b * Math.sin(angC_rad);
+    return {
+      A: { x: Ax, y: Ay },
+      B: { x: Bx, y: By },
+      C: { x: Cx, y: Cy }
+    };
+  }
 
-  // Límites reales del triángulo (sin escalar)
-  const minX = Math.min(Ax, Bx, Cx);
-  const maxX = Math.max(Ax, Bx, Cx);
-  const minY = Math.min(Ay, By, Cy);
-  const maxY = Math.max(Ay, By, Cy);
+  // --- Funciones para calcular centros del triángulo ---
 
-  const triWidth = maxX - minX;
-  const triHeight = maxY - minY;
+  // Baricentro: promedio de coordenadas de vértices
+  function calcularBaricentro(vertices) {
+    return {
+      x: (vertices.A.x + vertices.B.x + vertices.C.x) / 3,
+      y: (vertices.A.y + vertices.B.y + vertices.C.y) / 3
+    };
+  }
 
-  // Escala basada en ancho y alto reales
-  const escala = Math.min(
-    (canvasWidth - 2 * padding) / triWidth,
-    (canvasHeight - 2 * padding) / triHeight
-  );
+  // Incentro: coordenadas ponderadas por lados
+  function calcularIncentro(vertices, lados) {
+    const [a, b, c] = lados;
+    const perimetro = a + b + c;
+    return {
+      x: (a * vertices.A.x + b * vertices.B.x + c * vertices.C.x) / perimetro,
+      y: (a * vertices.A.y + b * vertices.B.y + c * vertices.C.y) / perimetro
+    };
+  }
 
-  // Offsets para centrar
-  const offsetX = padding + (canvasWidth - 2 * padding - triWidth * escala) / 2 - minX * escala;
-  const offsetY = padding + (canvasHeight - 2 * padding - triHeight * escala) / 2 - minY * escala;
+  // Circuncentro: punto de intersección de mediatrices
+  function calcularCircuncentro(vertices) {
+    const {A, B, C} = vertices;
 
-  // Coordenadas escaladas e invertidas en Y para el canvas
-  const AX = Ax * escala + offsetX;
-  const AY = canvasHeight - (Ay * escala + offsetY);
+    // Mediatrices de AB y BC
+    const D = 2 * (A.x*(B.y - C.y) + B.x*(C.y - A.y) + C.x*(A.y - B.y));
+    if (D === 0) return {x: NaN, y: NaN}; // puntos colineales
 
-  const BX = Bx * escala + offsetX;
-  const BY = canvasHeight - (By * escala + offsetY);
+    const Ux = ((A.x**2 + A.y**2)*(B.y - C.y) + (B.x**2 + B.y**2)*(C.y - A.y) + (C.x**2 + C.y**2)*(A.y - B.y)) / D;
+    const Uy = ((A.x**2 + A.y**2)*(C.x - B.x) + (B.x**2 + B.y**2)*(A.x - C.x) + (C.x**2 + C.y**2)*(B.x - A.x)) / D;
 
-  const CX = Cx * escala + offsetX;
-  const CY = canvasHeight - (Cy * escala + offsetY);
+    return {x: Ux, y: Uy};
+  }
 
-  // Dibujo
-  ctx.beginPath();
-  ctx.moveTo(AX, AY);
-  ctx.lineTo(BX, BY);
-  ctx.lineTo(CX, CY);
-  ctx.closePath();
-  ctx.stroke();
+  // Función para dibujar triángulo (sin cambios)
+  function dibujarTriangulo(ctx, a, b, c, A, B, C) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.strokeStyle = "#007bff";
+    ctx.lineWidth = 2;
 
-  // Etiquetas de lados (en puntos medios)
-  ctx.fillStyle = "#333";
-  ctx.font = "14px sans-serif";
-  ctx.fillText(`a = ${a.toFixed(2)}`, (BX + CX) / 2, (BY + CY) / 2);
-  ctx.fillText(`b = ${b.toFixed(2)}`, (AX + CX) / 2, (AY + CY) / 2);
-  ctx.fillText(`c = ${c.toFixed(2)}`, (AX + BX) / 2, (AY + BY) / 2);
-}
+    const padding = 40;
+    const canvasWidth = ctx.canvas.width;
+    const canvasHeight = ctx.canvas.height;
+
+    // Punto A en (0,0), punto B en (c,0), punto C con ley del coseno (ángulo C)
+    const Ax = 0;
+    const Ay = 0;
+
+    const Bx = c;
+    const By = 0;
+
+    const angC_rad = (C * Math.PI) / 180;
+    const Cx = b * Math.cos(angC_rad);
+    const Cy = b * Math.sin(angC_rad);
+
+    // Límites reales del triángulo (sin escalar)
+    const minX = Math.min(Ax, Bx, Cx);
+    const maxX = Math.max(Ax, Bx, Cx);
+    const minY = Math.min(Ay, By, Cy);
+    const maxY = Math.max(Ay, By, Cy);
+
+    const triWidth = maxX - minX;
+    const triHeight = maxY - minY;
+
+    // Escala basada en ancho y alto reales
+    const escala = Math.min(
+      (canvasWidth - 2 * padding) / triWidth,
+      (canvasHeight - 2 * padding) / triHeight
+    );
+
+    // Offsets para centrar
+    const offsetX = padding + (canvasWidth - 2 * padding - triWidth * escala) / 2 - minX * escala;
+    const offsetY = padding + (canvasHeight - 2 * padding - triHeight * escala) / 2 - minY * escala;
+
+    // Coordenadas escaladas e invertidas en Y para el canvas
+    const AX = Ax * escala + offsetX;
+    const AY = canvasHeight - (Ay * escala + offsetY);
+
+    const BX = Bx * escala + offsetX;
+    const BY = canvasHeight - (By * escala + offsetY);
+
+    const CX = Cx * escala + offsetX;
+    const CY = canvasHeight - (Cy * escala + offsetY);
+
+    // Dibujo
+    ctx.beginPath();
+    ctx.moveTo(AX, AY);
+    ctx.lineTo(BX, BY);
+    ctx.lineTo(CX, CY);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Etiquetas de lados (en puntos medios)
+    ctx.fillStyle = "#333";
+    ctx.font = "14px sans-serif";
+    ctx.fillText(`a = ${a.toFixed(2)}`, (BX + CX) / 2, (BY + CY) / 2);
+    ctx.fillText(`b = ${b.toFixed(2)}`, (AX + CX) / 2, (AY + CY) / 2);
+    ctx.fillText(`c = ${c.toFixed(2)}`, (AX + BX) / 2, (AY + BY) / 2);
+  }
 
   // --- Implementación ajustarCanvas y redibujar ---
   function ajustarCanvas() {
