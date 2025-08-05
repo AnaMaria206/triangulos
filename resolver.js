@@ -223,9 +223,9 @@ Lado faltante ≈ ${c2.toFixed(2)}
       `Vértices:\nA = (${vertices.A.x.toFixed(2)}, ${vertices.A.y.toFixed(2)})\n` +
       `B = (${vertices.B.x.toFixed(2)}, ${vertices.B.y.toFixed(2)})\n` +
       `C = (${vertices.C.x.toFixed(2)}, ${vertices.C.y.toFixed(2)})\n\n` +
-      `Centros:\nBaricentro (G) = (${baricentro.x.toFixed(2)}, ${baricentro.y.toFixed(2)})\n` +
-      `Incentro (I) = (${incentro.x.toFixed(2)}, ${incentro.y.toFixed(2)})\n` +
-      `Circuncentro (O) = (${circuncentro.x.toFixed(2)}, ${circuncentro.y.toFixed(2)})`;
+      `Centros:\nBaricentro (Int. Medianas) = (${baricentro.x.toFixed(2)}, ${baricentro.y.toFixed(2)})\n` +
+      `Incentro (Int. Bisectrices) = (${incentro.x.toFixed(2)}, ${incentro.y.toFixed(2)})\n` +
+      `Circuncentro (Int. Mediatrices) = (${circuncentro.x.toFixed(2)}, ${circuncentro.y.toFixed(2)})`;
 
     // Dibujo del triángulo simple (sin arcos ni etiquetas de ángulo)
     dibujarTriangulo(ctx, ladosRes[0], ladosRes[1], ladosRes[2], angulosRes[0], angulosRes[1], angulosRes[2]);
@@ -391,5 +391,6 @@ Lado faltante ≈ ${c2.toFixed(2)}
     }
   });
 });
+
 
 
