@@ -301,72 +301,70 @@ Lado faltante ≈ ${c2.toFixed(2)}
   }
 
   // Función para dibujar triángulo (sin cambios)
-  function dibujarTriangulo(ctx, a, b, c, A, B, C) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.strokeStyle = "#007bff";
-    ctx.lineWidth = 2;
+function dibujarTriangulo(ctx, a, b, c, A, B, C) {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.strokeStyle = "#007bff";
+  ctx.lineWidth = 2;
 
-    const padding = 40;
-    const canvasWidth = ctx.canvas.width;
-    const canvasHeight = ctx.canvas.height;
+  const padding = 40;
+  const canvasWidth = ctx.canvas.width;
+  const canvasHeight = ctx.canvas.height;
 
-    // Punto A en (0,0), punto B en (c,0), punto C con ley del coseno (ángulo C)
-    const Ax = 0;
-    const Ay = 0;
+  // Punto A en (0,0), punto B en (c,0), punto C usando ángulo C
+  const Ax = 0;
+  const Ay = 0;
 
-    const Bx = c;
-    const By = 0;
+  const Bx = c;
+  const By = 0;
 
-    const angC_rad = (C * Math.PI) / 180;
-    const Cx = b * Math.cos(angC_rad);
-    const Cy = b * Math.sin(angC_rad);
+  const angC_rad = (C * Math.PI) / 180;
+  const Cx = b * Math.cos(angC_rad);
+  const Cy = b * Math.sin(angC_rad);
 
-    // Límites reales del triángulo (sin escalar)
-    const minX = Math.min(Ax, Bx, Cx);
-    const maxX = Math.max(Ax, Bx, Cx);
-    const minY = Math.min(Ay, By, Cy);
-    const maxY = Math.max(Ay, By, Cy);
+  // Límites reales del triángulo
+  const minX = Math.min(Ax, Bx, Cx);
+  const maxX = Math.max(Ax, Bx, Cx);
+  const minY = Math.min(Ay, By, Cy);
+  const maxY = Math.max(Ay, By, Cy);
 
-    const triWidth = maxX - minX;
-    const triHeight = maxY - minY;
+  const triWidth = maxX - minX;
+  const triHeight = maxY - minY;
 
-    // Escala basada en ancho y alto reales
-    const escala = Math.min(
-      (canvasWidth - 2 * padding) / triWidth,
-      (canvasHeight - 2 * padding) / triHeight
-    );
+  const escala = Math.min(
+    (canvasWidth - 2 * padding) / triWidth,
+    (canvasHeight - 2 * padding) / triHeight
+  );
 
-    // Offsets para centrar
-    const offsetX = padding + (canvasWidth - 2 * padding - triWidth * escala) / 2 - minX * escala;
-    const offsetY = padding + (canvasHeight - 2 * padding - triHeight * escala) / 2 - minY * escala;
+  const offsetX = padding + (canvasWidth - 2 * padding - triWidth * escala) / 2 - minX * escala;
+  const offsetY = padding + (canvasHeight - 2 * padding - triHeight * escala) / 2 - minY * escala;
 
-    // Coordenadas escaladas e invertidas en Y para el canvas
-    const AX = Ax * escala + offsetX;
-    const AY = canvasHeight - (Ay * escala + offsetY);
+  // Coordenadas en canvas
+  const AX = Ax * escala + offsetX;
+  const AY = canvasHeight - (Ay * escala + offsetY);
 
-    const BX = Bx * escala + offsetX;
-    const BY = canvasHeight - (By * escala + offsetY);
+  const BX = Bx * escala + offsetX;
+  const BY = canvasHeight - (By * escala + offsetY);
 
-    const CX = Cx * escala + offsetX;
-    const CY = canvasHeight - (Cy * escala + offsetY);
+  const CX = Cx * escala + offsetX;
+  const CY = canvasHeight - (Cy * escala + offsetY);
 
-    // Dibujo
-    ctx.beginPath();
-    ctx.moveTo(AX, AY);
-    ctx.lineTo(BX, BY);
-    ctx.lineTo(CX, CY);
-    ctx.closePath();
-    ctx.stroke();
+  // Dibujo del triángulo
+  ctx.beginPath();
+  ctx.moveTo(AX, AY);
+  ctx.lineTo(BX, BY);
+  ctx.lineTo(CX, CY);
+  ctx.closePath();
+  ctx.stroke();
 
-    // Etiquetas de lados (en puntos medios)
-    ctx.fillStyle = "#333";
-    ctx.font = "14px sans-serif";
-    ctx.fillText(`a = ${a.toFixed(2)}`, (BX + CX) / 2, (BY + CY) / 2);
-    ctx.fillText(`b = ${b.toFixed(2)}`, (AX + CX) / 2, (AY + CY) / 2);
-    ctx.fillText(`c = ${c.toFixed(2)}`, (AX + BX) / 2, (AY + BY) / 2);
-  }
+  // Etiquetas de vértices (ajustadas)
+  ctx.fillStyle = "#000";
+  ctx.font = "16px sans-serif";
+  ctx.fillText("A", AX - 15, AY + 15);
+  ctx.fillText("B", BX + 10, BY + 15);
+  ctx.fillText("C", CX - 10, CY - 10);
+}
 
   // --- Implementación ajustarCanvas y redibujar ---
   function ajustarCanvas() {
@@ -391,6 +389,7 @@ Lado faltante ≈ ${c2.toFixed(2)}
     }
   });
 });
+
 
 
 
